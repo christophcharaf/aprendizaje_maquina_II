@@ -1,0 +1,11 @@
+metaflow
+pylint
+numpy
+pandas
+matplotlib
+xgboost
+redis
+matplotlib
+seaborn
+scikit-learn
+torch

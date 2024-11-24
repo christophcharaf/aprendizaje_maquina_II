@@ -43,6 +43,7 @@ class BatchProcessingModel(FlowSpec):
         # Se utiliza el objeto S3 para acceder a los datos desde el bucket en S3.
         s3 = S3(s3root="s3://batch/")
         data_obj = s3.get("data/stroke_data.csv")
+        
         self.X_batch = pd.read_csv(data_obj.path)
         self.next(self.batch_processing)
 
@@ -96,7 +97,7 @@ class BatchProcessingModel(FlowSpec):
                 data = task.X_batch
             if hasattr(task, 'model'):
                 model = task.model
-
+        
         # Convertir los datos a tensores de PyTorch
         # pylint: disable=possibly-used-before-assignment
         data_tensor = torch.tensor(data.values, dtype=torch.float32)
@@ -128,7 +129,7 @@ class BatchProcessingModel(FlowSpec):
        
         # Convertir el diccionario a un DataFrame y exportar el csv
         df_redis = pd.DataFrame(list(dict_redis.items()), columns=['Key', 'Value'])
-
+        
         df_redis.to_csv("predictions.csv", index=False)
 
         self.redis_data = dict_redis

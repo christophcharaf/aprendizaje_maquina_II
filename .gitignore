@@ -1,0 +1,10 @@
+.venv
+*.csv
+*.pth
+data/
+
+# python
+__pycache__
+
+# airflow
+airflow/logs/

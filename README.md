@@ -1,97 +1,123 @@
-[![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
+# Aprendizaje de Máquina II
 
-# Aprendizaje de Maquina II
-Este repositorio contiene el material de clases (presentaciones, ejercicios y notebooks) para Aprendizaje de Maquina II (CEIA - FIUBA). 
+# Trabajo Práctico Final
 
-Para revisar los criterios de aprobación, ver el [documento correspondiente](CriteriosAprobacion.md).
+Integrantes:
 
-### Objetivo de la materia
-El objetivo de la materia es acercar a los alumnos los conceptos necesarios para desarrollar productos de software relacionados a Machine Learning y análisis de datos de una manera escalable y siguiendo buenas prácticas de programación. También se trabaja sobre las tareas operativas de Machine Learning (MLOps) con distintas herramientas para disponibilizar los resultados en ambientes productivos 🚀.
+Araujo, Diego
 
-### Organización del Repositorio
-``` 
-    clase#
-        teoria
-        hands-on
-        README.md
+Charaf, Christopher
+
+Cid, Maria Fabiana
+
+Fernández, Gonzalo
+
+Villanueva, Azul
+
+## Instalación
+
+1. Para poder levantar todos los servicios, primero instala [Docker](https://docs.docker.com/engine/install/) en tu 
+computadora (o en el servidor que desees usar).
+
+2. Clona este repositorio.
+
+3. Crea las carpetas `airflow/config`, `airflow/dags`, `airflow/logs`, `airflow/plugins`, 
+`airflow/logs`.
+
+4. Si estás en Linux o MacOS, en el archivo `.env`, reemplaza `AIRFLOW_UID` por el de tu 
+usuario o alguno que consideres oportuno (para encontrar el UID, usa el comando 
+`id -u <username>`). De lo contrario, Airflow dejará sus carpetas internas como root y no 
+podrás subir DAGs (en `airflow/dags`) o plugins, etc.
+
+5. En la carpeta raíz de este repositorio, ejecuta:
+
+```bash
+docker compose --profile all up
 ```
 
-### Requerimientos
-* Lenguaje de Programación
-    * Python >=3.10
-    * Poetry / Pip / Conda para instalar librerías
-* Librerías
-    * MLflow
-    * Librerias de manejo de datos y de modelos de aprendizaje automático.
-    * Jupiter Notebook
-* Herramientas
-    * GitHub para repositorios
-    * Docker
-    * Apache Airflow
-* IDE Recomendados 
-    * Visual Studio Code
-    * PyCharm Community Edition    
+6. Una vez que todos los servicios estén funcionando (verifica con el comando `docker ps -a` 
+que todos los servicios estén healthy o revisa en Docker Desktop), podrás acceder a los 
+diferentes servicios mediante:
+   - Apache Airflow: http://localhost:8080
+   - MLflow: http://localhost:5000
+   - MinIO: http://localhost:9001 (ventana de administración de Buckets)
+   - API: http://localhost:8800/
+   - Documentación de la API: http://localhost:8800/docs
 
-#### Poetry
-Este repositorio contiene un archivo `pyproject.toml` para instalar las dependencias usando 
-[Poetry](https://python-poetry.org/)
+Si estás usando un servidor externo a tu computadora de trabajo, reemplaza `localhost` por su IP 
+(puede ser una privada si tu servidor está en tu LAN o una IP pública si no; revisa firewalls 
+u otras reglas que eviten las conexiones).
 
-## Contenido
+Todos los puertos u otras configuraciones se pueden modificar en el archivo `.env`. Se invita 
+a jugar y romper para aprender; siempre puedes volver a clonar este repositorio.
 
-### [Clase 1](clase1/README.md) 
-* Introducción a la Materia
-* Ciclo de vida de un proyecto de Aprendizaje Automático
-* Machine Learning Operations (MLOps)
-* Buenas prácticas de programación
+## Apagar los servicios
 
-### [Clase 2](clase2/README.md) 
+Estos servicios ocupan cierta cantidad de memoria RAM y procesamiento, por lo que cuando no 
+se están utilizando, se recomienda detenerlos. Para hacerlo, ejecuta el siguiente comando:
 
-* Desarrollo de modelos
-* Las 4 fases del desarrollo de modelos
-* Contenedores y Docker
+```bash
+docker compose --profile all down
+```
 
-### [Clase 3](clase3/README.md)
-* Infraestructura
-* Plataforma de ML
-* MLFlow
+Si deseas no solo detenerlos, sino también eliminar toda la infraestructura (liberando espacio en disco), 
+utiliza el siguiente comando:
 
-### [Clase 4](clase4/README.md)
-* Orquestadores y sincronizadores
-* Gestión del flujo de trabajo de ciencia de datos
-* Apache Airflow
+```bash
+docker compose down --rmi all --volumes
+```
 
-### [Clase 5](clase5/README.md)
-* Despliegue de modelos
-* Sirviendo modelos
-* Predicción en lotes
+Nota: Si haces esto, perderás todo en los buckets y bases de datos.
 
-### [Clase 6](clase6/README.md)
-* Desplegado on-line
-* APIs y Microservicios
-* Implementación de REST APIs en Python
+## Simulación de servidor externo con dataset
+Una de las tareas del servicio de airflow es realizar un fetch del datset.
+Para eso simulamos un servidor externo que contiene el archivo zip con el dataset.
 
-### [Clase 7](clase7/README.md)
-* Sirviendo modelos en el mundo real
-* Estrategias de implementación
-* Ejemplo de servicios de modelos
+Una forma de simularlo es mediante un servidor http con python:
 
+```sh
+python -m http.server 12000 -d data/
+```
 
-## Bibliografia
+Se elije el puerto 12000 para no asegurar que no es uno ya utilizado por otro proceso.
 
-- Designing Machine Learning Systems. An Iterative Process for Production-Ready Applications - Chip Huyen (Ed. O’Reilly)
-- Machine Learning Engineering with Python: Manage the production life cycle of machine learning models using MLOps with practical examplesv - Andrew P. McMahon (Ed. Packt Publishing)
-- Engineering MLOps: Rapidly build, test, and manage production-ready machine learning life cycles at scale - Emmanuel Raj (Ed. Packt Publishing)
-- Introducing MLOps: How to Scale Machine Learning in the Enterprise -  Mark Treveil, Nicolas Omont, Clément Stenac, Kenji Lefevre, Du Phan, Joachim Zentici, Adrien Lavoillotte, Makoto Miyazaki, Lynn Heidmann (Ed. O’Reilly)
-- Practical MLOps: Operationalizing Machine Learning Models -  Noah Gift, Alfredo Deza (Ed. O’Reilly)
-- Machine Learning Engineering - Andriy Burkov (Ed. True Positive Inc.)
-- Machine Learning Engineering in Action - Ben Wilson (Manning)
+En este caso el puerto utilizado es el 12000 y se sirve la carpeta `data/`.
+Luego, se debe actualizar la URL al archivo zip en la configuración del DAG (tener en cuenta que se debe utilizar la
+dirección IP del sistema en la red local para que los servicios de docker puedan direccionarlo, localhost no funcionará).
 
----
-Esta obra está bajo una
-[Licencia Creative Commons Atribución-NoComercial-CompartirIgual 4.0 Internacional][cc-by-nc-sa].
+IMPORTANTE: Es necesario actualizar en el archivo `etl_process.py` la dirección IP para descarga del ZIP con
+la correspondiente a la máquina simulando el servidor.
 
-[![CC BY-NC-SA 4.0][cc-by-nc-sa-image]][cc-by-nc-sa]
+La dirección IP de la máquina simulando el servidor externo se puede obtener mediante el comando `ip ad`.
 
-[cc-by-nc-sa]: https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es
-[cc-by-nc-sa-image]: https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png
-[cc-by-nc-sa-shield]: https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg
+## Ejecución de la pipeline completa
+
+1. Simular servidor externo que contiene el ZIP del dataset
+2. Levantar servicios con docker como se describió previamente
+3. Chequear en navegador que tando el servidor con el dataset como todos los servicios involucrados (ver URLs descriptas previamente) se encuentran disponibles.
+3. Ejecutar el proceso ETL en Airflow (credenciales airflow: airflow)
+4. Ejecutar el notebook [mlflow_model.ipynb](notebook/mlflow_model.ipynb) para poner el primer modelo en producción.
+    - De ya haber un modelo en producción, el notebook arrojará un error (no se puede sobrescribir). Se puede eliminar el modelo en mlflow o cambiar el nombre del modelo a registrar.
+5. En airflow, ejecutar el pipeline para re-entrenar el modelo y competir con el actual en producción.
+6. Comprobar el funcionamiento de la REST API:
+    - Se puede ver la documentación de la API en el siguiente link: http://localhost:8800/docs
+    - Se puede interactuar con la API con `curl`.
+
+Ejemplo de predicción mediante la REST API:
+
+```bash
+curl -X 'POST'   'http://localhost:8800/predict/'   -H 'accept: application/json'   -H 'Content-Type: application/json'   -d '{
+  "features": {
+        "age": 67,
+        "gender": "Male",
+        "hypertension": 0,
+        "heart_disease": 1,
+        "ever_married": "Yes",
+        "work_type": "Private",
+        "Residence_type": "Urban",
+        "avg_glucose_level": 228.69,
+        "bmi": 36.6,
+        "smoking_status": "smokes"
+    }
+}'
+```

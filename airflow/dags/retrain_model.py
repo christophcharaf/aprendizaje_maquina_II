@@ -13,7 +13,7 @@ if it performs  better than the old one. It uses the F1 score to evaluate the mo
 """
 
 default_args = {
-    "owner": "Gonzalo Gabriel Fernandez",
+    "owner": "Grupo Aprendizaje de Máquina II",
     "depends_on_past": False,
     "schedule_interval": None,
     "retries": 1,

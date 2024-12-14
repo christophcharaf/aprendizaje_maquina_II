@@ -18,7 +18,7 @@ testing. The split between the training and testing datasets is 70/30 and they a
 
 
 default_args = {
-    "owner": "Gonzalo Gabriel Fernandez",
+    "owner": "Grupo Aprendizaje de Máquina II",
     "depends_on_past": False,
     "schedule_interval": None,
     "retries": 1,

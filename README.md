@@ -3,10 +3,15 @@
 # Trabajo Práctico Final
 
 Integrantes:
+
 Araujo, Diego
+
 Charaf, Christopher
+
 Cid, Maria Fabiana
+
 Fernández, Gonzalo
+
 Villanueva, Azul
 
 ## Instalación

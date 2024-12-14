@@ -4,17 +4,43 @@
 
 Integrantes:
 
-Araujo, Diego
+- Araujo, Diego
+- Charaf, Christopher
+- Cid, Maria Fabiana
+- Fernández, Gonzalo
+- Villanueva, Azul
 
-Charaf, Christopher
+## Objetivos
+**Nivel medio:** Implementar en local usando Metaflow el ciclo de desarrollo del modelo que desarrollaron
+en Aprendizaje de Máquina I y generar un archivo para predicción en bache (un csv o un archivo de SQLite). La nota puede
+llegar a 10 si implementan una base de datos (ya sea KVS u otro tipo) con los datos de la predicción en bache.
 
-Cid, Maria Fabiana
+**Nivel alto:** Implementar el modelo que desarrollaron en Aprendizaje de Máquina I en este ambiente
+productivo. Para ello, pueden usar los recursos que consideren apropiado. Los servicios disponibles de base son Apache
+Airflow, MLflow, PostgresSQL, MinIO, FastAPI. Todo está montado en Docker, por lo que además deben instalado Docker.
 
-Fernández, Gonzalo
+## Setup del entorno de trabajo local
+Crear entorno virtual de Python para el proyecto:
 
-Villanueva, Azul
+```bash
+python -m venv .venv
+```
 
-## Instalación
+Activar el entorno virtual:
+```bash
+source .venv/bin/activate
+```
+
+Instalar las dependencias del proyecto:
+```bash
+pip install -r requirements.txt
+```
+Descargar el dataset de Kaggle:
+```bash
+./download_dataset.sh
+```
+
+## Levantar servicios con Docker compose
 
 1. Para poder levantar todos los servicios, primero instala [Docker](https://docs.docker.com/engine/install/) en tu 
 computadora (o en el servidor que desees usar).
@@ -51,7 +77,7 @@ u otras reglas que eviten las conexiones).
 Todos los puertos u otras configuraciones se pueden modificar en el archivo `.env`. Se invita 
 a jugar y romper para aprender; siempre puedes volver a clonar este repositorio.
 
-## Apagar los servicios
+## Bajar servicios con Docker compose
 
 Estos servicios ocupan cierta cantidad de memoria RAM y procesamiento, por lo que cuando no 
 se están utilizando, se recomienda detenerlos. Para hacerlo, ejecuta el siguiente comando:
@@ -73,6 +99,11 @@ Nota: Si haces esto, perderás todo en los buckets y bases de datos.
 Una de las tareas del servicio de airflow es realizar un fetch del datset.
 Para eso simulamos un servidor externo que contiene el archivo zip con el dataset.
 
+Para obterner el archivo ZIP con el proyecto:
+```sh
+kaggle datasets download -d fedesoriano/stroke-prediction-dataset
+```
+
 Una forma de simularlo es mediante un servidor http con python:
 
 ```sh
@@ -90,16 +121,23 @@ la correspondiente a la máquina simulando el servidor.
 
 La dirección IP de la máquina simulando el servidor externo se puede obtener mediante el comando `ip ad`.
 
+Para chequear el funcionamiento del servidors se puede acceder al siguiente link: http://{YOUR_IP_ADDRESS}:12000/
+
 ## Ejecución de la pipeline completa
 
 1. Simular servidor externo que contiene el ZIP del dataset
 2. Levantar servicios con docker como se describió previamente
 3. Chequear en navegador que tando el servidor con el dataset como todos los servicios involucrados (ver URLs descriptas previamente) se encuentran disponibles.
+    - Tener en cuenta que la primera vez la REST API arrojará error por no tener ningun modelo en producción.
 3. Ejecutar el proceso ETL en Airflow (credenciales airflow: airflow)
+    - Se puede observar tanto en la UI de MLflow como en el bucket de minio los resultados del proceso.
 4. Ejecutar el notebook [mlflow_model.ipynb](notebook/mlflow_model.ipynb) para poner el primer modelo en producción.
     - De ya haber un modelo en producción, el notebook arrojará un error (no se puede sobrescribir). Se puede eliminar el modelo en mlflow o cambiar el nombre del modelo a registrar.
+    - Se puede ver los resultados del proceso reflejados en la UI de MLflow.
 5. En airflow, ejecutar el pipeline para re-entrenar el modelo y competir con el actual en producción.
+    - Se puede observar los resultados del entrenamiento y la competición entre el nuevo modelo y el en producción en la UI de MLflow.
 6. Comprobar el funcionamiento de la REST API:
+    - Una vez realizado el paso 5, el servicio de REST API debería reestablecerse luego de unos minutos. De lo contrario se puede realizar manualmente bajando y levantando los servicios.
     - Se puede ver la documentación de la API en el siguiente link: http://localhost:8800/docs
     - Se puede interactuar con la API con `curl`.
 

@@ -1,4 +1,14 @@
 # Aprendizaje de Máquina II
+
+# Trabajo Práctico Final
+
+Integrantes:
+Araujo, Diego
+Charaf, Christopher
+Cid, Maria Fabiana
+Fernández, Gonzalo
+Villanueva, Azul
+
 ## Instalación
 
 1. Para poder levantar todos los servicios, primero instala [Docker](https://docs.docker.com/engine/install/) en tu 
